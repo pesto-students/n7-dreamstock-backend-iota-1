@@ -18,7 +18,6 @@ app.use(bodyParser.json());
 // DB Config
 const db = require('./config/keys').mongoURI;
 
-
 // Connect to MongoDB
 mongoose
   .connect(db)
@@ -39,9 +38,9 @@ app.use('/api/dashboard', dashboard);
 
 const port = process.env.PORT || 5000;
 // Creating a cron job which runs on every 10 second
-// cron.schedule("*/100 * * * * *", function() {
-//   // trycheckUserTransactions();
-//   // updateStocksLivePrice()
+// cron.schedule("*/10 * * * * *", function() {
+//   trycheckUserTransactions();
+//   updateStocksLivePrice()
 //   // console.log("running a task every 20 second");
 // });
 

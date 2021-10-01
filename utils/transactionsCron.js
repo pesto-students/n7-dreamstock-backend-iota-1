@@ -1,11 +1,8 @@
-// const Transactions = require('../models/transactions');
+const Transactions = require('../models/transactions');
 const Order = require('../models/order');
 // const User = require('../models/user');
 const Stocks = require('../models/stocks');
 
-const request = require('request');
-const stocks = require('../models/stocks');
-// const transactions = require('../models/transactions');
 module.exports = function trycheckUserTransactions() {
     checkUserTransactions()
 }
@@ -18,7 +15,7 @@ checkUserTransactions = async () => {
         })
     const d = new Date();
     let todaysUsedStocks = {}
-    await Stocks.find({ 'date': { '$gt': new Date('2021-09-29') } })
+    await Stocks.find({ 'date': { '$gt': new Date(d.toDateString()) } })
         .then((allStocks) => {
             todaysUsedStocks = allStocks.reduce(function (acc, cur, i) {
                 acc[cur['stock_symbol']] = cur;
@@ -26,10 +23,10 @@ checkUserTransactions = async () => {
             }, {});
         })
     usersDB.map((el) => {
-        Order.find({ 'user_id': '61416c75ec81a683eaf7aa94', 'date': { '$gt': new Date('2021-09-29') } })
+        Order.find({ 'user_id': el._id, 'date': { '$gt': new Date(d.toDateString()) } })
             .sort({ date: -1 })
             .then(orders => {
-                console.log('orders', orders.length)
+                console.log('orders', orders,todaysUsedStocks)
                 compileTodaysSummary(orders, todaysUsedStocks, el)
             })
             .catch(err =>
@@ -45,11 +42,10 @@ const compileTodaysSummary = async (summary, todaysUsedStocks, userDetail) => {
     let return_on_investment_of_day = 0
     summary.map(async (el) => {
         const { _id, quantity, order_price, investment, stock_name, stock_symbol } = el || {}
-        console.log('stock_name-->', stock_name)
         let close_price = todaysUsedStocks[stock_symbol]['current']
         total_investment_of_day += Number(investment);
         return_on_investment_of_day += quantity * close_price;
-        const profit_loss = close_price > order_price ? 'LOSS' : 'PROFIT';
+        const profit_loss = close_price < order_price ? 'LOSS' : 'PROFIT';
         const percentage_change = (close_price - order_price) / order_price;
         const earnings = (close_price - order_price) * quantity;
         const update_info_of_order = {
@@ -67,7 +63,6 @@ const compileTodaysSummary = async (summary, todaysUsedStocks, userDetail) => {
 }
 
 const closeTradingForDay = (data) => {
-    console.log('closeTradingForDay', data)
     const { _id, change, earnings, close_price, current_price, profit_loss } = data
     Order.updateOne({ "_id": _id },
         { $set: { change, earnings, close_price, current_price, profit_loss } })
@@ -79,15 +74,16 @@ const closeTradingForDay = (data) => {
 
 
 const createTransactionForDay = (data, userDetail) => {
+    console.log('createTransactionForDay ->>',data, userDetail)
     const { total_investment_of_day, return_on_investment_of_day } = data
     const action = return_on_investment_of_day > total_investment_of_day ? 'PROFIT' : 'LOSS';
     const profit_loss = (return_on_investment_of_day - total_investment_of_day);
-    const final_balance = profit_loss + userDetail.wallet_balance;
-    const amount = userDetail.wallet_balance;
-    // const transaction = Transactions({
-    //      amount, final_balance, profit_loss, action
-    // })
-    // transactions.save()
+    const final_balance = Number(return_on_investment_of_day) + Number(userDetail.wallet_balance);
+    const amount = Number(userDetail.wallet_balance) + Number(total_investment_of_day);
+    const transactions = new Transactions({
+       user_id:userDetail._id,  amount, final_balance, profit_loss, action
+    })
+    transactions.save()
     console.log('createTransactionForDay', {amount, final_balance, profit_loss, action})
     updateWalletBalance(userDetail, final_balance)
 }

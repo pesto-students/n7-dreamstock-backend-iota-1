@@ -1,8 +1,7 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-const singleOrderSchema = require('./order')
 // Create Schema
-const Transactions = new Schema({
+const TransactionsScehma = new Schema({
     user_id: {
         type: String,
         required: true
@@ -11,16 +10,23 @@ const Transactions = new Schema({
         type: Date,
         default: Date.now
     },
-    gross_investment :{
+    amount: {
         type: String,
         required: true,
     },
-    gross_return:{
+    action: {
         type: String,
         required: true,
     },
-    order_details:[{ _id: Schema.Types.ObjectId, ref: singleOrderSchema }]
+    final_balance: {
+        type: String,
+        required: true,
+    },
+    profit_loss: {
+        type: String,
+        required: false,
+        default: 'NA'
+    }
 });
 
-module.exports = Transactions = mongoose.model('Transactions', Transactions);
-{date:{$gt: ISODate('2021-09-25')}}
+module.exports = Transactions = mongoose.model('Transactions', TransactionsScehma);

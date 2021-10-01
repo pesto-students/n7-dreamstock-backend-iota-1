@@ -23,27 +23,24 @@ const UserSchema = new Schema({
     type: String,
     required: false
   },
-  in_progress_orders: {
-    type: String,
-    required: false
+  google_id:{
+    type:String,
+    required:false
   },
-  order_history: {
-    type: String,
-    required: false
-  },
-  passbook_id: {
-    type: String,
-    required: false
+  imageUrl :{
+    type:String,
+    required:false,
+    default:"https://upload.wikimedia.org/wikipedia/commons/9/99/Sample_User_Icon.png"
   },
   wallet_balance: {
     type: String,
     required: false,
-    default: '100'
+    default: '1000'
   },
   currency: {
     type: String,
     required: false,
-    default: 'USD'
+    default: 'INR'
   },
   date: {
     type: Date,
