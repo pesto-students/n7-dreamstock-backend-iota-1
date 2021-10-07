@@ -9,6 +9,8 @@ const dashboard = require('./routes/api/dashboard');
 const passbook = require('./routes/api/passbook');
 const wallet = require('./routes/api/wallet');
 const  moment = require('moment-timezone');
+const cors = require("cors");
+
 // const transactions = require('./routes/api/transactions');
 const trycheckUserTransactions =  require('./utils/transactionsCron')
 const timezonecheck =  require('./utils/timezonecheck')
@@ -18,6 +20,13 @@ const updateStocksLivePrice = require('./utils/cron')
 // Body parser middleware
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+
+const corsOptions = {
+  origin: "*",
+  credentials: true, //access-control-allow-credentials:true
+  optionSuccessStatus: 200,
+};
+app.use(cors(corsOptions));
 
 // DB Config
 const db = require('./config/keys').mongoURI;
