@@ -33,7 +33,7 @@ checkUserTransactions =() => {
 const updateClosingPriceOfStock = (stock_symbol) =>{
     return new Promise((resolve,reject)=>{
         request({
-            url: `http://localhost:5000/api/stocks/getCurrentStockInfo?name=${stock_symbol}`, //on 3000 put your port no.
+            url: `http://localhost:5000/api/stocks/getLiveStockInfo?name=${stock_symbol}`, //on 3000 put your port no.
             method: 'GET',
         }, function (error, response, body) {
             if(error){

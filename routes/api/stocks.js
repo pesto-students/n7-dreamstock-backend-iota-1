@@ -4,6 +4,7 @@ const passport = require('passport');
 const axios = require('axios');
 const User = require('../../models/User');
 const Stocks = require('../../models/stocks');
+const moment = require('moment');
 
 // @route   GET api/stocks/search
 // @desc    Tests post route
@@ -24,32 +25,45 @@ router.get('/search', (req, res) => {
 // @access  Private
 router.get('/getStockInfo', (req, res) => {
     console.log('getStockInfo', req.query.name)
-    axios.get(`https://finnhub.io/api/v1/stock/candle?symbol=${req.query.name}&resolution=D&from=1611769728&to=1615302599&token=c4rs38iad3ic8b7csbtg`)
+    const today = moment().format('d')
+    const from = moment().format('X') - 2629743;
+    const to = moment().format('X') - 50400;
+    axios.get(`https://finnhub.io/api/v1/stock/candle?symbol=${req.query.name}&resolution=D&from=${1631022248}&to=${1631627048}&token=c4rs38iad3ic8b7csbtg`)
         .then((response) => {
             res.json({ msg: 'stocks Works', response: response.data })
         })
         .catch((err) => res.status(404).json(err))
 });
 
-// @route   GET api/stocks/getCurrentStockInfo
+// @route   GET api/stocks/getLiveStockInfo
 // @desc    Tests post route
 // @access  Private
-router.get('/getCurrentStockInfo', (req, res) => {
-    axios.get(`https://finnhub.io/api/v1/quote?symbol=${req.query.name}&token=c4rs38iad3ic8b7csbtg`)
+router.get('/getLiveStockInfo', (req, res) => {
+    const from = moment().subtract(7, 'days').format('X') - 50400 ;
+    const to = moment().subtract(7, 'days').format('X') - 48400 ;
+    // axios.get(`https://finnhub.io/api/v1/stock/candle?symbol=${req.query.name}&resolution=15&from=${from}&to=${to}&token=c4rs38iad3ic8b7csbtg`)
+    axios.get(`https://finnhub.io/api//v1/quote?symbol=${req.query.name}&token=c4rs38iad3ic8b7csbtg`)
         .then((response) => {
-            console.log('stocks data', response.data);
-            res.json({ msg: 'getCurrentStockInfo Works', response: response.data })
+            console.log('response',response)
+            // let data = {}
+            // for(items in response.data){
+            //     data[items] = response.data[items][0]
+            // }
+            res.json({ msg: 'getLiveStockInfo Works', response: response.data })
         })
-        .catch((err) => res.status(404).json(err))
+        .catch((err) => {
+            console.log('err',err)
+            res.status(404).json(err)
+        })
 });
 
 // @route   GET api/stocks/livePrices
 // @desc    Tests post route
 // @access  Private
 router.get('/livePrices',(req, res) => {
-    const d = new Date();
-    Stocks.find({ 'date': { '$gt': new Date(d.toDateString()) } })
+    Stocks.find({'date':{ '$gt': moment().format('YYYY-MM-DD') }})
         .then((allstocks) => {
+            console.log('livePrices',allstocks)
             const liveStocksData = allstocks.reduce(function (acc, cur, i) {
                 acc[cur['stock_symbol']] = cur['current'];
                 return acc;
@@ -61,8 +75,5 @@ router.get('/livePrices',(req, res) => {
             res.status(404).json(err)
         })
 });
-
-
-
 
 module.exports = router;

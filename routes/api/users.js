@@ -30,7 +30,7 @@ const generateJwtToken = (data) => {
 // @desc    Register user
 // @access  Public
 router.post('/manualregister', (req, res) => {
-  console.log('manualregister', req.body)
+  // console.log('manualregister', req.body)
 
   // Check Validation
 

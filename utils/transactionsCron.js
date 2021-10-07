@@ -2,12 +2,13 @@ const Transactions = require('../models/transactions');
 const Order = require('../models/order');
 // const User = require('../models/user');
 const Stocks = require('../models/stocks');
+const moment = require('moment')
 
 module.exports = function trycheckUserTransactions() {
     checkUserTransactions()
 }
 checkUserTransactions = async () => {
-    console.log('checkUserTransactions');
+    console.log('checkUserTransactions started');
     let usersDB = [];
     await User.find()
         .then((users) => {
@@ -15,7 +16,7 @@ checkUserTransactions = async () => {
         })
     const d = new Date();
     let todaysUsedStocks = {}
-    await Stocks.find({ 'date': { '$gt': new Date(d.toDateString()) } })
+    await Stocks.find()
         .then((allStocks) => {
             todaysUsedStocks = allStocks.reduce(function (acc, cur, i) {
                 acc[cur['stock_symbol']] = cur;
@@ -23,11 +24,13 @@ checkUserTransactions = async () => {
             }, {});
         })
     usersDB.map((el) => {
-        Order.find({ 'user_id': el._id, 'date': { '$gt': new Date(d.toDateString()) } })
+        Order.find({ 'user_id': el._id, 'date': { '$gt': new Date(moment().format('YYYY-MM-DD')) } })
             .sort({ date: -1 })
             .then(orders => {
-                console.log('orders', orders,todaysUsedStocks)
+                console.log('compileTodaysSummary', orders,todaysUsedStocks,el)
+                if(orders.length>0){
                 compileTodaysSummary(orders, todaysUsedStocks, el)
+                }
             })
             .catch(err =>
                 console.log({ nopostfound: 'No post found with that ID' })
@@ -58,8 +61,8 @@ const compileTodaysSummary = async (summary, todaysUsedStocks, userDetail) => {
         }
         console.log('compoilied', update_info_of_order)
         closeTradingForDay(update_info_of_order);
-        createTransactionForDay({ total_investment_of_day, return_on_investment_of_day }, userDetail)
     })
+    createTransactionForDay({ total_investment_of_day, return_on_investment_of_day }, userDetail)
 }
 
 const closeTradingForDay = (data) => {

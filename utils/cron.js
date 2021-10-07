@@ -2,7 +2,6 @@ const request = require('request')
 const Stocks = require('../models/stocks');
 
 module.exports = function updateStocksLivePrice() {
-    console.log('updateStocksLivePrice');
     Stocks.find()
     .then(async (allStocks)=>{
         console.log('allStocks',allStocks)
@@ -11,7 +10,7 @@ module.exports = function updateStocksLivePrice() {
             let x =JSON.parse(current)
             console.log('current',x.response.c)
             Stocks.updateOne({"stock_symbol": el.stock_symbol},
-            { $set: { current:x.response.c+100 } })
+            { $set: { current:x.response.c+10 } })
             .then((newdata) => {
                 console.log('updateLivePriceOfStock')
             })
@@ -24,7 +23,7 @@ module.exports = function updateStocksLivePrice() {
 const updateLivePriceOfStock = (stock_symbol) =>{
     return new Promise((resolve,reject)=>{
         request({
-            url: `http://localhost:5000/api/stocks/getCurrentStockInfo?name=${stock_symbol}`, //on 3000 put your port no.
+            url: `http://localhost:5000/api/stocks/getLiveStockInfo?name=${stock_symbol}`, //on 3000 put your port no.
             method: 'GET',
         }, function (error, response, body) {
             if(error){
