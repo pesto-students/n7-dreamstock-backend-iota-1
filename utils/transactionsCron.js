@@ -4,16 +4,26 @@ const Order = require('../models/order');
 const Stocks = require('../models/stocks');
 const moment = require('moment')
 
-module.exports = function trycheckUserTransactions() {
-    checkUserTransactions()
+module.exports = function trycheckUserTransactions(userId) {
+    checkUserTransactions(userId)
 }
-checkUserTransactions = async () => {
-    console.log('checkUserTransactions started');
+
+
+checkUserTransactions = async (userId) => {
+    console.log('checkUserTransactions started',userId);
     let usersDB = [];
-    await User.find()
-        .then((users) => {
-            usersDB = users
-        })
+    if (userId) {
+      await User.findOne({ '_id': userId })
+            .then((users) => {
+                usersDB = [users]
+            })
+    }
+    else {
+        await User.find()
+            .then((users) => {
+                usersDB = users
+            })
+    }
     const d = new Date();
     let todaysUsedStocks = {}
     await Stocks.find()
@@ -27,9 +37,9 @@ checkUserTransactions = async () => {
         Order.find({ 'user_id': el._id, 'date': { '$gt': new Date(moment().format('YYYY-MM-DD')) } })
             .sort({ date: -1 })
             .then(orders => {
-                console.log('compileTodaysSummary', orders,todaysUsedStocks,el)
-                if(orders.length>0){
-                compileTodaysSummary(orders, todaysUsedStocks, el)
+                console.log('compileTodaysSummary', orders, todaysUsedStocks, el)
+                if (orders.length > 0) {
+                    compileTodaysSummary(orders, todaysUsedStocks, el)
                 }
             })
             .catch(err =>
@@ -52,7 +62,7 @@ const compileTodaysSummary = async (summary, todaysUsedStocks, userDetail) => {
         const percentage_change = (close_price - order_price) / order_price;
         const earnings = (close_price - order_price) * quantity;
         const update_info_of_order = {
-            change: percentage_change,
+            change: percentage_change.toFixed(2),
             earnings,
             close_price,
             current_price: close_price,
@@ -77,17 +87,17 @@ const closeTradingForDay = (data) => {
 
 
 const createTransactionForDay = (data, userDetail) => {
-    console.log('createTransactionForDay ->>',data, userDetail)
+    console.log('createTransactionForDay ->>', data, userDetail)
     const { total_investment_of_day, return_on_investment_of_day } = data
     const action = return_on_investment_of_day > total_investment_of_day ? 'PROFIT' : 'LOSS';
     const profit_loss = (return_on_investment_of_day - total_investment_of_day);
     const final_balance = Number(return_on_investment_of_day) + Number(userDetail.wallet_balance);
     const amount = Number(userDetail.wallet_balance) + Number(total_investment_of_day);
     const transactions = new Transactions({
-       user_id:userDetail._id,  amount, final_balance, profit_loss, action
+        user_id: userDetail._id, amount, final_balance, profit_loss, action
     })
     transactions.save()
-    console.log('createTransactionForDay', {amount, final_balance, profit_loss, action})
+    console.log('createTransactionForDay', { amount, final_balance, profit_loss, action })
     updateWalletBalance(userDetail, final_balance)
 }
 

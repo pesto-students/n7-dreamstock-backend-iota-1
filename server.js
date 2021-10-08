@@ -58,7 +58,7 @@ const port = process.env.PORT || 5000;
 // cron.schedule("*/10 * * * * *", function() {
   // trycheckUserTransactions();
   // updateStocksLivePrice()
-  // console.log("running a task every 20 second");
+  // console.log("running a task every 10 second");
   // timezonecheck()
 // });
 

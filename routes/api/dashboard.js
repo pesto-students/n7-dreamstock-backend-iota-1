@@ -5,6 +5,9 @@ const User = require('../../models/User');
 const Order = require('../../models/order');
 const Stocks = require('../../models/stocks')
 const moment = require('moment')
+const checkParticularUserTransaction = require('../../utils/transactionsCron')
+const updateStocksLivePrice = require('../../utils/cron')
+const status = require('../../config/env');
 
 // @route   GET api/dashboard/mydashboard
 // @desc    Get post by id
@@ -56,7 +59,7 @@ router.get('/summary', passport.authenticate('jwt', { session: false }), (req, r
                     obj[date] = { date }
                     obj[date]['data'] = [orders[i]]
                     obj[date]['total_cost'] = Number(orders[i].investment)
-                    obj[date]['profit_loss'] = "+10%"
+                    // obj[date]['profit_loss'] = "+10%"
                     obj[date]['portfolioCurrentValue'] = (Number(orders[i].quantity) * Number(orders[i].current_price))
                     // obj[date]['portfolioCurrentValue'] == Number(orders[i].investment)
 
@@ -137,7 +140,15 @@ const updateWallentBalance = (user, investment, res) => {
     const newBalance = Number(wallet_balance) - Number(investment)
     User.updateOne({ '_id': _id }, { $set: { wallet_balance: newBalance } })
         .then(response => {
-            console.log('wallet updated sucess', response)
+            console.log('wallet updated sucess', response);
+            if(!status.envProd){
+                setTimeout(()=>{
+                    updateStocksLivePrice()
+                },1000*30)
+                setTimeout(()=>{
+                    checkParticularUserTransaction(_id)
+                },1000*50)
+            }
             return res.status(200).json({ success: true, newBalance });
         })
         .catch(error => {

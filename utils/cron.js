@@ -1,16 +1,17 @@
 const request = require('request')
 const Stocks = require('../models/stocks');
+const moment = require('moment');
 
 module.exports = function updateStocksLivePrice() {
-    Stocks.find()
+    const d = moment().format('YYYY-MM-DD')
+    Stocks.find({ 'date': { '$gt': new Date(d) } })
     .then(async (allStocks)=>{
         console.log('allStocks',allStocks)
         allStocks.map(async (el)=>{
             const current = await updateLivePriceOfStock(el.stock_symbol)
             let x =JSON.parse(current)
-            console.log('current',x.response.c)
             Stocks.updateOne({"stock_symbol": el.stock_symbol},
-            { $set: { current:x.response.c+10 } })
+            { $set: { current:x.response.c+20 } })
             .then((newdata) => {
                 console.log('updateLivePriceOfStock')
             })
@@ -31,6 +32,7 @@ const updateLivePriceOfStock = (stock_symbol) =>{
                 reject(error)
             }
             else{
+                console.log('updateLivePriceOfStock',body)
                 resolve(body)
             }
             console.log({error: error, response: response, body: body});

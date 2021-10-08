@@ -39,13 +39,13 @@ router.get('/getStockDetails',  passport.authenticate('jwt', { session: false })
 // @route   GET api/stocks/getLiveStockInfo
 // @desc    Tests post route
 // @access  Private
-router.get('/getLiveStockInfo',  passport.authenticate('jwt', { session: false }),(req, res) => {
+router.get('/getLiveStockInfo', (req, res) => {
     const from = moment().subtract(7, 'days').format('X') - 50400;
     const to = moment().subtract(7, 'days').format('X') - 48400;
     // axios.get(`https://finnhub.io/api/v1/stock/candle?symbol=${req.query.name}&resolution=15&from=${from}&to=${to}&token=c4rs38iad3ic8b7csbtg`)
     axios.get(`https://finnhub.io/api//v1/quote?symbol=${req.query.name}&token=c4rs38iad3ic8b7csbtg`)
         .then((response) => {
-            console.log('getLiveStockInfo response', response)
+            console.log('getLiveStockInfo response', response.data)
             if (response.data.error) {
                 return res.status(400).json({ success: false, response: response.error })
             }
@@ -65,7 +65,8 @@ router.get('/getLiveStockInfo',  passport.authenticate('jwt', { session: false }
 // @desc    Tests post route
 // @access  Private
 router.get('/livePrices', passport.authenticate('jwt', { session: false }), (req, res) => {
-    Stocks.find({ 'date': { '$gt': moment().format('YYYY-MM-DD') } })
+    const d = moment().format('YYYY-MM-DD')
+    Stocks.find({ 'date': { '$gt': new Date(d) } })
         .then((allstocks) => {
             console.log('livePrices allstocks', allstocks)
             const liveStocksData = allstocks.reduce(function (acc, cur, i) {
