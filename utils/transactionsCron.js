@@ -54,6 +54,9 @@ const compileTodaysSummary = async (summary, todaysUsedStocks, userDetail) => {
     let total_investment_of_day = 0
     let return_on_investment_of_day = 0
     summary.map(async (el) => {
+        if(el.order_closed){
+            return
+        }
         const { _id, quantity, order_price, investment, stock_name, stock_symbol } = el || {}
         let close_price = todaysUsedStocks[stock_symbol]['current']
         total_investment_of_day += Number(investment);
@@ -78,7 +81,7 @@ const compileTodaysSummary = async (summary, todaysUsedStocks, userDetail) => {
 const closeTradingForDay = (data) => {
     const { _id, change, earnings, close_price, current_price, profit_loss } = data
     Order.updateOne({ "_id": _id },
-        { $set: { change, earnings, close_price, current_price, profit_loss } })
+        { $set: { change, earnings, close_price, current_price, profit_loss, order_closed:true} })
         .then((newdata) => {
             console.log('closeTradingForDay update', newdata)
         })

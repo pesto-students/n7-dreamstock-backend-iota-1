@@ -15,7 +15,7 @@ const singleOrderSchema = new Schema({
         type: String,
         required: true
     },
-    investment :{
+    investment: {
         type: String,
         required: true,
     },
@@ -51,6 +51,11 @@ const singleOrderSchema = new Schema({
         type: String,
         required: false,
         default: null
+    },
+    order_closed: {
+        type: Boolean,
+        required: false,
+        default: false
     },
     date: {
         type: Date,
