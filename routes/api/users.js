@@ -87,6 +87,18 @@ router.post('/login', (req, res) => {
     })
 });
 
+// @route   GET api/users/user_info
+// @desc    Return current user
+// @access  Private
+router.get(
+  '/user_info',
+  passport.authenticate('jwt', { session: false }),
+  (req, res) => {
+    return res.json({ user: req.user })
+  }
+);
+
+
 // @route   GET api/users/current
 // @desc    Return current user
 // @access  Private

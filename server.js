@@ -8,6 +8,7 @@ const stocks = require('./routes/api/stocks');
 const dashboard = require('./routes/api/dashboard');
 const passbook = require('./routes/api/passbook');
 const wallet = require('./routes/api/wallet');
+const profile = require('./routes/api/profile');
 const  moment = require('moment-timezone');
 const cors = require("cors");
 
@@ -49,16 +50,17 @@ app.use('/api/stocks', stocks);
 app.use('/api/dashboard', dashboard);
 app.use('/api/passbook', passbook);
 app.use('/api/wallet', wallet);
+app.use('/api/profile', profile);
 // app.use('/api/transactions', dashboard);
 
 const port = process.env.PORT || 5000;
 // Creating a cron job which runs on every 10 second
-cron.schedule("*/10 * * * * *", function() {
+// cron.schedule("*/10 * * * * *", function() {
   // trycheckUserTransactions();
   // updateStocksLivePrice()
   // console.log("running a task every 20 second");
   // timezonecheck()
-});
+// });
 
 app.listen(port, () => {
   moment.tz.setDefault("Asia/Mumbai");

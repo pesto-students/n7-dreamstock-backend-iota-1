@@ -10,10 +10,10 @@ router.get('/data', passport.authenticate('jwt', { session: false }), (req, res)
     Transactions.find({ 'user_id': req.user._id})
         .sort({ date: -1 })
         .then(order => {
-            res.json(order)
+            res.status(200).json({sucess:true,order})
         })
-        .catch(err =>
-            res.status(404).json({ noordertfound: 'No orders found with that ID', err })
+        .catch(error =>
+            res.status(400).json({ sucess:false, error })
         );
 });
 

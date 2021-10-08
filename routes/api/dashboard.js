@@ -6,8 +6,6 @@ const Order = require('../../models/order');
 const Stocks = require('../../models/stocks')
 const moment = require('moment')
 
-
-
 // @route   GET api/dashboard/mydashboard
 // @desc    Get post by id
 // @access  Private to users logged in
@@ -16,16 +14,15 @@ router.get('/myDashboard', passport.authenticate('jwt', { session: false }), (re
     // console.log('user_id',req.user._id)
     // return res.json(req.user)
     const d = moment().format('YYYY-MM-DD');
-    console.log('dashboard date',d, req.user._id)
-    Order.find({ 'user_id': req.user._id })
+    // const d = moment().subtract(2, 'days').format('YYYY-MM-DD');
+    Order.find({ 'user_id': req.user._id, 'date': { '$gt': new Date(d) } })
         .sort({ date: -1 })
         .then(order => {
-            console.log('mydashboard',order)
-            res.json(order)
+            res.status(200).json({ success: true, order })
         })
-        .catch(err =>{
-            console.log('err mydashboard',err)
-            return res.status(404).json({ noordertfound: 'No orders found with that ID', err })
+        .catch(error => {
+            console.log('err mydashboard', error)
+            return res.status(400).json({ success: false, error })
         })
 });
 
@@ -34,6 +31,8 @@ router.get('/myDashboard', passport.authenticate('jwt', { session: false }), (re
 // @desc    Get post by id
 // @access  Private to users logged in
 router.get('/summary', passport.authenticate('jwt', { session: false }), (req, res) => {
+    const d = moment().format('YYYY-MM-DD');
+    // Order.find({ 'user_id': req.user._id, 'date':{'$gt':new Date(d)} })
     Order.find({ 'user_id': req.user._id })
         .sort({ date: -1 })
         .then(orders => {
@@ -64,13 +63,12 @@ router.get('/summary', passport.authenticate('jwt', { session: false }), (req, r
                 }
             }
             Object.keys(obj).map((el) => finalData.push(obj[el]))
-            res.json({ finalData })
+            res.status(200).json({ success: true, finalData })
         })
-        .catch(err => {
-            console.log('summary', err)
-            res.status(404).json({ nopostfound: 'No post found with that ID' })
-        }
-        );
+        .catch(error => {
+            console.log('summary', error)
+            res.status(404).json({ success: false, error })
+        });
 });
 
 
@@ -80,7 +78,7 @@ router.get('/summary', passport.authenticate('jwt', { session: false }), (req, r
 router.post(
     '/create_order',
     passport.authenticate('jwt', { session: false }),
-    async(req, res) => {
+    async (req, res) => {
         // const { errors, isValid } = validateInput(req.body);
         // // Check Validation
         // if (!isValid) {
@@ -91,13 +89,12 @@ router.post(
         let newOrder;
         const payload = req.body.data;
         let total = 0
-        payload.forEach((el)=>{total+=Number(el.investment)})
-        console.log('total',total,Number(req.user.wallet_balance))
+        payload.forEach((el) => { total += Number(el.investment) })
         if (Number(req.user.wallet_balance) < total) {
-            return res.status(400).json({ success: 'false', detail: 'Not sufficient wallet balance' })
+            return res.status(400).json({ success: false, error: 'Not sufficient wallet balance' })
         }
         const response = [];
-        let arr =[]
+        let arr = []
         const game_date = moment().format('d')
         await payload.forEach(async (el) => {
             const { stock_name, stock_symbol, open, investment, quantity, order_price, close_price, change, profit_loss, current_price, earnings } = el || {}
@@ -111,18 +108,17 @@ router.post(
                     response.push(order)
                 })
                 .catch(err => console.log(err));
-            if(!arr.includes(stock_symbol)){
+            if (!arr.includes(stock_symbol)) {
                 arr.push(stock_symbol)
-            Stocks.find({ "stock_symbol": stock_symbol })
-                .then(async (stocksdata) => {
-                    if (stocksdata.length == 0) {
-                        await createStockEntry(el)
-                    }
-                })
+                Stocks.find({ "stock_symbol": stock_symbol })
+                    .then(async (stocksdata) => {
+                        if (stocksdata.length == 0) {
+                            await createStockEntry(el)
+                        }
+                    })
             }
         });
-        updateWallentBalance(req.user, total)
-        return res.status(200).json({ success: 'true', order: payload });
+        updateWallentBalance(req.user, total, res)
     }
 );
 
@@ -135,13 +131,19 @@ const createStockEntry = async (data) => {
     await newStock.save()
 }
 
-const updateWallentBalance = (user, investment) => {
-        console.log('updateWallentBalance',user,investment)
-        const { _id, wallet_balance } = user
+const updateWallentBalance = (user, investment, res) => {
+
+    const { _id, wallet_balance } = user
     const newBalance = Number(wallet_balance) - Number(investment)
     User.updateOne({ '_id': _id }, { $set: { wallet_balance: newBalance } })
-        .then(res => console.log('wallet updated', res))
-        .catch(err => console.log('wallet update failed', err))
+        .then(response => {
+            console.log('wallet updated sucess', response)
+            return res.status(200).json({ success: true, newBalance });
+        })
+        .catch(error => {
+            console.log('wallet update failed', error)
+            return res.status(400).json({ success: false, error });
+        })
 }
 
 module.exports = router;
