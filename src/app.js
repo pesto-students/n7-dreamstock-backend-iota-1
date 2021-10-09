@@ -6,6 +6,7 @@ const cron = require("node-cron");
 const cors = require("cors");
 const app = express();
 const moment =require('moment')
+const apiMetrics = require('prometheus-api-metrics');
 
 // routes
 const users = require('./api-routes/users');
@@ -45,6 +46,8 @@ const corsOptions = {
 };
 app.use(cors(corsOptions));
 
+// Using prometheus to collect api data
+app.use(apiMetrics())
 
 // Passport middleware
 app.use(passport.initialize());
