@@ -3,7 +3,8 @@ const moment = require('moment')
 
 
 module.exports = function timezonecheck() {
-    const date = moment().format('d')
+    const date = moment()
+    console.log('timezonecheck',date)
     // const date = moment().subtract(2, 'days').format('YYYY-MM-DD')
     const from = moment().format('X') - 50400;
     const to = moment().format('X') - 50399;

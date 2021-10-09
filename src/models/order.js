@@ -16,24 +16,24 @@ const singleOrderSchema = new Schema({
         required: true
     },
     investment: {
-        type: String,
+        type: Number,
         required: true,
     },
     quantity: {
-        type: String,
+        type: Number,
         required: true,
     },
     order_price: {
-        type: String,
+        type: Number,
         required: true,
     },
     close_price: {
-        type: String,
+        type: Number,
         required: false,
         default: null
     },
     change: {
-        type: String,
+        type: Number,
         required: false,
         default: null
     },
@@ -43,23 +43,23 @@ const singleOrderSchema = new Schema({
         default: null
     },
     current_price: {
-        type: String,
+        type: Number,
         required: false,
         default: null
     },
     earnings: {
-        type: String,
+        type: Number,
         required: false,
         default: null
     },
     order_closed: {
-        type: Boolean,
+        type: Number,
         required: false,
         default: false
     },
     date: {
         type: Date,
-        default: new Date().toISOString()
+        default: Date.now()
     }
 });
 

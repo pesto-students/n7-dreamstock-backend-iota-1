@@ -1,4 +1,4 @@
-const Transactions = require('../../models/transactions');
+const Transactions = require('../models/transactions');
 const express = require('express');
 const router = express.Router();
 const passport = require('passport');

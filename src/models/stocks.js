@@ -12,22 +12,22 @@ const StocksOrderedSchema = new Schema({
         required: true
     },
     open: {
-        type: String,
+        type: Number,
         required: true,
     },
     close: {
-        type: String,
+        type: Number,
         required: false,
         default: null
     },
     current: {
-        type: String,
+        type: Number,
         required: false,
         default: null
     },
     date: {
         type: Date,
-        default: new Date().toISOString()
+        default:  Date.now()
     }
 });
 

@@ -3,34 +3,27 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const passport = require('passport');
 const cron = require("node-cron");
-const users = require('./routes/api/users');
-const stocks = require('./routes/api/stocks');
-const dashboard = require('./routes/api/dashboard');
-const passbook = require('./routes/api/passbook');
-const wallet = require('./routes/api/wallet');
-const profile = require('./routes/api/profile');
-const  moment = require('moment-timezone');
 const cors = require("cors");
+const app = express();
+const moment =require('moment')
 
-// const transactions = require('./routes/api/transactions');
+// routes
+const users = require('./api-routes/users');
+const stocks = require('./api-routes/stocks');
+const dashboard = require('./api-routes/dashboard');
+const passbook = require('./api-routes/passbook');
+const wallet = require('./api-routes/wallet');
+const profile = require('./api-routes/profile');
+
+
 const trycheckUserTransactions =  require('./utils/transactionsCron')
 const timezonecheck =  require('./utils/timezonecheck')
-const app = express();
 const request = require('request')
 const updateStocksLivePrice = require('./utils/cron')
-// Body parser middleware
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
-
-const corsOptions = {
-  origin: "*",
-  credentials: true, //access-control-allow-credentials:true
-  optionSuccessStatus: 200,
-};
-app.use(cors(corsOptions));
 
 // DB Config
-const db = require('./config/keys').mongoURI;
+const db = require('./config').mongoURI;
+
 
 // Connect to MongoDB
 mongoose
@@ -38,11 +31,28 @@ mongoose
   .then(() => console.log('MongoDB Connected'))
   .catch(err => console.log(err));
 
+
+// Body parser middleware
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+
+
+// CORS compatible
+const corsOptions = {
+  origin: "*",
+  credentials: true, //access-control-allow-credentials:true
+  optionSuccessStatus: 200,
+};
+app.use(cors(corsOptions));
+
+
 // Passport middleware
 app.use(passport.initialize());
 
+
 // Passport Config
-require('./config/passport')(passport);
+require('./utils/passport')(passport);
+
 
 // Use Routes
 app.use('/api/users', users);
@@ -51,18 +61,17 @@ app.use('/api/dashboard', dashboard);
 app.use('/api/passbook', passbook);
 app.use('/api/wallet', wallet);
 app.use('/api/profile', profile);
-// app.use('/api/transactions', dashboard);
 
-const port = process.env.PORT || 5000;
+
 // Creating a cron job which runs on every 10 second
-// cron.schedule("*/10 * * * * *", function() {
+cron.schedule("*/10 * * * * *", function() {
+    // const d= moment().add({hours:5,minutes:30})
+    // console.log('time',d)
   // trycheckUserTransactions();
-  // updateStocksLivePrice()
-  // console.log("running a task every 10 second");
+  updateStocksLivePrice()
+//   console.log("running a task every 10 second");
   // timezonecheck()
-// });
 
-app.listen(port, () => {
-  moment.tz.setDefault("Asia/Mumbai");
-  console.log(`Server running on port ${port}`)
 });
+
+module.exports = app;

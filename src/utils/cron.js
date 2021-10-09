@@ -4,6 +4,7 @@ const moment = require('moment');
 
 module.exports = function updateStocksLivePrice() {
     const d = moment().format('YYYY-MM-DD')
+    // console.log('date.check',d,new Date(d))
     Stocks.find({ 'date': { '$gt': new Date(d) } })
     .then(async (allStocks)=>{
         console.log('allStocks',allStocks)
@@ -11,7 +12,7 @@ module.exports = function updateStocksLivePrice() {
             const current = await updateLivePriceOfStock(el.stock_symbol)
             let x =JSON.parse(current)
             Stocks.updateOne({"stock_symbol": el.stock_symbol},
-            { $set: { current:x.response.c+20 } })
+            { $set: { current:x.response.c+10 } })
             .then((newdata) => {
                 console.log('updateLivePriceOfStock')
             })

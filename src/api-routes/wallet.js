@@ -1,8 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const passport = require('passport');
-const User = require('../../models/User');
-const Transactions = require('../../models/transactions');
+const User = require('../models/User');
+const Transactions = require('../models/transactions');
 
 // @route   GET api/wallet/recharge
 // @desc    Get post by id

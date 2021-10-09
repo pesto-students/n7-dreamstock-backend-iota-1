@@ -1,10 +1,10 @@
 const express = require('express');
 const router = express.Router();
 const jwt = require('jsonwebtoken');
-const keys = require('../../config/keys');
+const {secredtJWT} = require('../config');
 const passport = require('passport');
 // Load User model
-const User = require('../../models/User');
+const User = require('../models/User');
 
 const generateJwtToken = (data) => {
   // Sign Token
@@ -13,7 +13,7 @@ const generateJwtToken = (data) => {
     console.log("Login Payload", payload)
     jwt.sign(
       payload,
-      keys.secretOrKey,
+      secredtJWT,
       (err, token) => {
         console.log('token', err, token)
         resolve({
@@ -40,6 +40,7 @@ router.post('/manualregister', (req, res) => {
       console.log('USER exist')
       return res.status(400).json(errors);
     } else {
+      
       const { first_name, last_name, email } = req.body
       const newUser = new User({
         first_name, last_name, email
@@ -107,10 +108,10 @@ router.get(
   passport.authenticate('jwt', { session: false }),
   (req, res) => {
     console.log('authenticated', req.headers.authorization)
-    jwt.verify(req.headers.authorization.split(' ')[1], keys.secretOrKey, function (err, decoded) {
+    jwt.verify(req.headers.authorization.split(' ')[1], secredtJWT, function (err, decoded) {
       if (err) {
         console.log('err', err)
-        return res.status(404).json(err);
+        return res.status(400).json(err);
       }
       else {
         console.log('not expired', decoded);

@@ -9,7 +9,7 @@ const PassBookSchema = new Schema({
         required: true
     },
     amount: {
-        type: String,
+        type: Number,
         required: true
     },
     action: {
@@ -22,7 +22,7 @@ const PassBookSchema = new Schema({
         default: null
     },
     final_balance: {
-        type: String,
+        type: Number,
         required: true
     },
     success_status: {

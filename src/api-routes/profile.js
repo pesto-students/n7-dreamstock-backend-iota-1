@@ -3,7 +3,7 @@ const router = express.Router();
 const mongoose = require('mongoose');
 const passport = require('passport');
 // User model
-const User = require('../../models/User');
+const User = require('../models/User');
 
 
 // @route   GET api/profile/myprofile

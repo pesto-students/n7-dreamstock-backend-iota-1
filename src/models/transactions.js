@@ -8,10 +8,10 @@ const TransactionsScehma = new Schema({
     },
     date: {
         type: Date,
-        default: Date.now
+        default:  Date.now()
     },
     amount: {
-        type: String,
+        type: Number,
         required: true,
     },
     action: {
@@ -19,11 +19,11 @@ const TransactionsScehma = new Schema({
         required: true,
     },
     final_balance: {
-        type: String,
+        type: Number,
         required: true,
     },
     profit_loss: {
-        type: String,
+        type:  String,
         required: false,
         default: 'NA'
     }

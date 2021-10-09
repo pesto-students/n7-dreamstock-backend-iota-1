@@ -1,30 +1,25 @@
 const express = require('express');
 const router = express.Router();
 const passport = require('passport');
-const User = require('../../models/User');
-const Order = require('../../models/order');
-const Stocks = require('../../models/stocks')
+const User = require('../models/User');
+const Order = require('../models/order');
+const Stocks = require('../models/stocks')
 const moment = require('moment')
-const checkParticularUserTransaction = require('../../utils/transactionsCron')
-const updateStocksLivePrice = require('../../utils/cron')
-const status = require('../../config/env');
+const checkParticularUserTransaction = require('../utils/transactionsCron')
+const updateStocksLivePrice = require('../utils/cron')
+const {demoENV} = require('../config');
 
 // @route   GET api/dashboard/mydashboard
 // @desc    Get post by id
 // @access  Private to users logged in
 router.get('/myDashboard', passport.authenticate('jwt', { session: false }), (req, res) => {
-    // return res.json(req.user)
-    // console.log('user_id',req.user._id)
-    // return res.json(req.user)
     const d = moment().format('YYYY-MM-DD');
-    // const d = moment().subtract(2, 'days').format('YYYY-MM-DD');
     Order.find({ 'user_id': req.user._id, 'date': { '$gt': new Date(d) } })
         .sort({ date: -1 })
         .then(order => {
             res.status(200).json({ success: true, order })
         })
         .catch(error => {
-            console.log('err mydashboard', error)
             return res.status(400).json({ success: false, error })
         })
 });
@@ -35,11 +30,9 @@ router.get('/myDashboard', passport.authenticate('jwt', { session: false }), (re
 // @access  Private to users logged in
 router.get('/summary', passport.authenticate('jwt', { session: false }), (req, res) => {
     const d = moment().format('YYYY-MM-DD');
-    // Order.find({ 'user_id': req.user._id, 'date':{'$gt':new Date(d)} })
     Order.find({ 'user_id': req.user._id })
         .sort({ date: -1 })
         .then(orders => {
-            console.log('orders', orders)
             const finalData = []
             const obj = {};
             const data = {};
@@ -53,24 +46,19 @@ router.get('/summary', passport.authenticate('jwt', { session: false }), (req, r
                     obj[date]['data'].push(orders[i])
                     obj[date]['total_cost'] += Number(orders[i].investment)
                     obj[date]['portfolioCurrentValue'] += (Number(orders[i].quantity) * Number(orders[i].current_price))
-                    // obj[date]['profit_loss'] = (portfolioCurrentValue - obj[date]['total_cost'])/obj[date]['total_cost']
                 }
                 else {
                     obj[date] = { date }
                     obj[date]['data'] = [orders[i]]
                     obj[date]['total_cost'] = Number(orders[i].investment)
-                    // obj[date]['profit_loss'] = "+10%"
                     obj[date]['portfolioCurrentValue'] = (Number(orders[i].quantity) * Number(orders[i].current_price))
-                    // obj[date]['portfolioCurrentValue'] == Number(orders[i].investment)
-
                 }
             }
             Object.keys(obj).map((el) => finalData.push(obj[el]))
             res.status(200).json({ success: true, finalData })
         })
         .catch(error => {
-            console.log('summary', error)
-            res.status(404).json({ success: false, error })
+            res.status(0).json({ success: false, error })
         });
 });
 
@@ -135,13 +123,12 @@ const createStockEntry = async (data) => {
 }
 
 const updateWallentBalance = (user, investment, res) => {
-
     const { _id, wallet_balance } = user
     const newBalance = Number(wallet_balance) - Number(investment)
     User.updateOne({ '_id': _id }, { $set: { wallet_balance: newBalance } })
         .then(response => {
             console.log('wallet updated sucess', response);
-            if(!status.envProd){
+            if(demoENV){
                 setTimeout(()=>{
                     updateStocksLivePrice()
                 },1000*30)
