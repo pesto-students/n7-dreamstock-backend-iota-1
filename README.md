@@ -29,14 +29,12 @@ npm i in your terminal
 ### Executing program
 
 * How to run the program
-* Step-by-step bullets
+execute
 ```
-npm i in your terminal
+ npm run server 
 ```
+in your terminal at project directory location to start the server]
 
-```
-execute npm run server in your terminal to start the server
-```
 
 * To mimic closing of day, turn demoENV flag in config to true to 
 
@@ -51,10 +49,8 @@ Any advise for common problems or issues.
 Contributors names and contact info
 
 ex. Amanjeet Singh 
-ex. [@aman](amanjeetsingh@herokuapp.com)
 
 ex. Abhinav Degala
-ex. [@abhinav](https://twitter.com/dompizzie)
 
 ## Version History
 
