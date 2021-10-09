@@ -1,20 +1,11 @@
 # Dearm Stock
 
-## How run this Project ?
-1. git clone https://github.com/amanjeet17/ejam.git
-2. cd n7-dreamstock-backend-iota-1
-3. npm i 
-4. npm run server
-
-# Project should be running
-
-# Dearm Stock
-
-It is for people to come and bet 
+Dream Stock is platform where users can earn profits from their portfolios by buying virtual stocks in intraday trading.
 
 ## Description
 
-An in-depth paragraph about your project and overview of use.
+By providing a platform for users seeking to venture into the stock market without actually purchasing or selling stocks, we allow them to play on their predictions of the stock market. To experience the depth of the stock market, we want users to learn, play, and explore on DreamStock.
+
 
 ## Getting Started
 
