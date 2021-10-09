@@ -17,7 +17,7 @@ const profile = require('./api-routes/profile');
 
 
 const trycheckUserTransactions = require('./utils/transactionsCron');
-const timezonecheck = require('./utils/timezonecheck');
+// const timezonecheck = require('./utils/timezonecheck');
 const request = require('request');
 const updateStocksLivePrice = require('./utils/cron');
 
