@@ -1,6 +1,6 @@
-# Dearm Stock
+# DreamStock
 
-Dream Stock is platform where users can earn profits from their portfolios by buying virtual stocks in intraday trading.
+DreamStock is platform where users can earn profits from their portfolios by buying virtual stocks in intraday trading.
 
 ## Description
 
@@ -19,18 +19,16 @@ By providing a platform for users seeking to venture into the stock market witho
 clone https://github.com/amanjeet17/ejam.git
 ```
 
-```
-cd n7-dreamstock-backend-iota-1
-```
-```
-npm i in your terminal
-```
+```cd n7-dreamstock-backend-iota-1```
+
+```npm i``` in your terminal
+
 
 ### Executing program
 
 * How to run the program:
 
-```npm run server ```in your terminal at project directory location to start the server]
+```npm run server ```in your terminal at project directory location to start the server
 
 
 * To mimic closing of day, turn isDemoENV flag in config to true to 
@@ -45,9 +43,9 @@ Any advise for common problems or issues.
 
 Contributors names and contact info
 
-ex. Amanjeet Singh 
+Amanjeet Singh - amanjeetgilard@gmail.com
 
-ex. Abhinav Degala
+Abhinav Degala - abhinav.degala@gmail.com
 
 ## Version History
 
@@ -56,4 +54,4 @@ ex. Abhinav Degala
 
 ## License
 
-This project is licensed under the [Dearm Stock] License.
+This project is licensed under the [DreamStock] License.
