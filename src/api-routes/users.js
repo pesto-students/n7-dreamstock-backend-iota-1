@@ -10,21 +10,21 @@ const generateJwtToken = (data) => {
   // Sign Token
   return new Promise((resolve, reject) => {
     const payload = { id: data.id, user: data, iat: Date.now() }; // Create JWT Payload
-    console.log("Login Payload", payload)
+    console.log('Login Payload', payload);
     jwt.sign(
       payload,
       secredtJWT,
       (err, token) => {
-        console.log('token', err, token)
+        console.log('token', err, token);
         resolve({
           success: true,
           token: 'Bearer ' + token,
         });
-      }
+      },
     );
-  })
+  });
 
-}
+};
 
 // @route   POST api/users/manualregister
 // @desc    Register user
@@ -37,13 +37,13 @@ router.post('/manualregister', (req, res) => {
   User.findOne({ email: req.body.email }).then(user => {
     if (user) {
       errors.email = 'Email already exists';
-      console.log('USER exist')
+      console.log('USER exist');
       return res.status(400).json(errors);
     } else {
-      
-      const { first_name, last_name, email } = req.body
+
+      const { first_name, last_name, email } = req.body;
       const newUser = new User({
-        first_name, last_name, email
+        first_name, last_name, email,
       });
       newUser
         .save()
@@ -65,27 +65,26 @@ router.post('/login', (req, res) => {
     if (!user) {
       // const errors = 'User not found';
       // return res.status(400).json(errors);
-      const { givenName: first_name, familyName: last_name, email, googleId, imageUrl } = req.body
+      const { givenName: first_name, familyName: last_name, email, googleId, imageUrl } = req.body;
       const newUser = new User({
-        first_name, last_name, email, googleId, imageUrl
+        first_name, last_name, email, googleId, imageUrl,
       });
       newUser
         .save()
         .then(async userInfo => {
-          const generatedToken = await generateJwtToken(userInfo)
-          res.json(generatedToken)
+          const generatedToken = await generateJwtToken(userInfo);
+          res.json(generatedToken);
         })
         .catch(err => console.log(err));
-    }
-    else {
-      const generatedToken = await generateJwtToken(user)
-      res.json(generatedToken)
+    } else {
+      const generatedToken = await generateJwtToken(user);
+      res.json(generatedToken);
     }
   })
     .catch((err) => {
       console.log('login error', err);
-      res.status(400).json(err)
-    })
+      res.status(400).json(err);
+    });
 });
 
 // @route   GET api/users/user_info
@@ -95,8 +94,8 @@ router.get(
   '/user_info',
   passport.authenticate('jwt', { session: false }),
   (req, res) => {
-    return res.json({ user: req.user })
-  }
+    return res.json({ user: req.user });
+  },
 );
 
 
@@ -107,21 +106,19 @@ router.get(
   '/current',
   passport.authenticate('jwt', { session: false }),
   (req, res) => {
-    console.log('authenticated', req.headers.authorization)
-    jwt.verify(req.headers.authorization.split(' ')[1], secredtJWT, function (err, decoded) {
+    console.log('authenticated', req.headers.authorization);
+    jwt.verify(req.headers.authorization.split(' ')[1], secredtJWT, function(err, decoded) {
       if (err) {
-        console.log('err', err)
+        console.log('err', err);
         return res.status(400).json(err);
-      }
-      else {
+      } else {
         console.log('not expired', decoded);
-        return res.json({ user: req.user })
+        return res.json({ user: req.user });
 
       }
-    })
-  }
+    });
+  },
 );
-
 
 
 module.exports = router;

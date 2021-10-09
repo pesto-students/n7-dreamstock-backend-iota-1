@@ -5,8 +5,8 @@ const config = require('./config');
 
 const server = http.createServer(app);
 
-server.listen(config.port,() => {
-    moment.tz.setDefault("UTC");
-    console.log(`Server running on port ${config.port}`)
-   
+server.listen(config.port, () => {
+  moment.tz.setDefault('UTC');
+  console.log(`Server running on port ${config.port}`);
+
 });

@@ -2,10 +2,10 @@ const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const passport = require('passport');
-const cron = require("node-cron");
-const cors = require("cors");
+const cron = require('node-cron');
+const cors = require('cors');
 const app = express();
-const moment =require('moment')
+const moment = require('moment');
 const apiMetrics = require('prometheus-api-metrics');
 
 // routes
@@ -17,10 +17,10 @@ const wallet = require('./api-routes/wallet');
 const profile = require('./api-routes/profile');
 
 
-const trycheckUserTransactions =  require('./utils/transactionsCron')
-const timezonecheck =  require('./utils/timezonecheck')
-const request = require('request')
-const updateStocksLivePrice = require('./utils/cron')
+const trycheckUserTransactions = require('./utils/transactionsCron');
+const timezonecheck = require('./utils/timezonecheck');
+const request = require('request');
+const updateStocksLivePrice = require('./utils/cron');
 
 // DB Config
 const db = require('./config').mongoURI;
@@ -40,14 +40,14 @@ app.use(bodyParser.json());
 
 // CORS compatible
 const corsOptions = {
-  origin: "*",
-  credentials: true, //access-control-allow-credentials:true
+  origin: '*',
+  credentials: true, // access-control-allow-credentials:true
   optionSuccessStatus: 200,
 };
 app.use(cors(corsOptions));
 
 // Using prometheus to collect api data
-app.use(apiMetrics())
+app.use(apiMetrics());
 
 // Passport middleware
 app.use(passport.initialize());
@@ -67,12 +67,12 @@ app.use('/api/profile', profile);
 
 
 // Creating a cron job which runs on every 10 second
-cron.schedule("*/10 * * * * *", function() {
-    // const d= moment().add({hours:5,minutes:30})
-    // console.log('time',d)
+cron.schedule('*/10 * * * * *', function() {
+  // const d= moment().add({hours:5,minutes:30})
+  // console.log('time',d)
   // trycheckUserTransactions();
-  updateStocksLivePrice()
-//   console.log("running a task every 10 second");
+  updateStocksLivePrice();
+  //   console.log("running a task every 10 second");
   // timezonecheck()
 
 });

@@ -11,14 +11,14 @@ opts.secretOrKey = secredtJWT;
 module.exports = passport => {
   passport.use(
     new JwtStrategy(opts, (jwt_payload, done) => {
-          User.findById(jwt_payload.id)
-            .then(user => {
-              if (user) {
-                return done(null, user);
-              }
-              return done(null, false);
-            })
-            .catch(err => done(err, null));
-    })
+      User.findById(jwt_payload.id)
+        .then(user => {
+          if (user) {
+            return done(null, user);
+          }
+          return done(null, false);
+        })
+        .catch(err => done(err, null));
+    }),
   );
 };
