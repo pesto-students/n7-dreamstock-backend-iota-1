@@ -5,8 +5,7 @@ const passport = require('passport');
 const cron = require('node-cron');
 const cors = require('cors');
 const app = express();
-const moment = require('moment');
-const apiMetrics = require('prometheus-api-metrics');
+// const apiMetrics = require('prometheus-api-metrics');
 
 // routes
 const users = require('./api-routes/users');
@@ -47,7 +46,7 @@ const corsOptions = {
 app.use(cors(corsOptions));
 
 // Using prometheus to collect api data
-app.use(apiMetrics());
+// app.use(apiMetrics());
 
 // Passport middleware
 app.use(passport.initialize());
@@ -68,13 +67,9 @@ app.use('/api/profile', profile);
 
 // Creating a cron job which runs on every 10 second
 cron.schedule('*/10 * * * * *', function() {
-  // const d= moment().add({hours:5,minutes:30})
-  // console.log('time',d)
   // trycheckUserTransactions();
   updateStocksLivePrice();
-  //   console.log("running a task every 10 second");
-  // timezonecheck()
-
+  // console.log('cron job runs 10sec')
 });
 
 module.exports = app;

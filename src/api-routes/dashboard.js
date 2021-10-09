@@ -7,7 +7,7 @@ const Stocks = require('../models/stocks');
 const moment = require('moment');
 const checkParticularUserTransaction = require('../utils/transactionsCron');
 const updateStocksLivePrice = require('../utils/cron');
-const {demoENV} = require('../config');
+const {isDemoENV} = require('../config');
 
 // @route   GET api/dashboard/mydashboard
 // @desc    Get post by id
@@ -85,7 +85,6 @@ router.post(
     }
     const response = [];
     let arr = [];
-    const game_date = moment().format('d');
     await payload.forEach(async(el) => {
       const { stock_name, stock_symbol, open, investment, quantity, order_price, close_price, change, profit_loss, current_price, earnings } = el || {};
       newOrder = new Order({
@@ -126,8 +125,7 @@ const updateWallentBalance = (user, investment, res) => {
   const newBalance = Number(wallet_balance) - Number(investment);
   User.updateOne({ _id: _id }, { $set: { wallet_balance: newBalance } })
     .then(response => {
-      console.log('wallet updated sucess', response);
-      if (demoENV){
+      if (isDemoENV){
         setTimeout(() => {
           updateStocksLivePrice();
         }, 1000 * 30);
@@ -138,7 +136,6 @@ const updateWallentBalance = (user, investment, res) => {
       return res.status(200).json({ success: true, newBalance });
     })
     .catch(error => {
-      console.log('wallet update failed', error);
       return res.status(400).json({ success: false, error });
     });
 };

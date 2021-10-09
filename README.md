@@ -33,7 +33,7 @@ npm i in your terminal
 ```npm run server ```in your terminal at project directory location to start the server]
 
 
-* To mimic closing of day, turn demoENV flag in config to true to 
+* To mimic closing of day, turn isDemoENV flag in config to true to 
 
 ## Help
 
