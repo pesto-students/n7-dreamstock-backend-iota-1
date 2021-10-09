@@ -12,7 +12,7 @@ dotenv.config();
 module.exports = {
   stockApieEndPoint: 'https://finnhub.io/api/v1/',
   stockApiKey: 'c4rs38iad3ic8b7csbtg',
-  port: 5000,
+  port: process.env.PORT || 5000,
   mongoURI: 'mongodb+srv://new-user1:KsXJ2rZyWjrB9Wr9@cluster0.bdyyh.mongodb.net/DreamStock?retryWrites=true&w=majority',
   secredtJWT: 'secret',
   isDemoENV: true,
