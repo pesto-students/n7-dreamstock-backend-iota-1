@@ -30,7 +30,7 @@ clone https://github.com/amanjeet17/ejam.git
 
 * How to run the program:
 
-```npm run server ``` in your terminal at project directory location to start the server
+```npm run server``` in your terminal at project directory location to start the server
 
 
 * To mimic closing of day, turn isDemoENV flag in config to true to 
