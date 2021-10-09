@@ -28,12 +28,9 @@ npm i in your terminal
 
 ### Executing program
 
-* How to run the program
-execute
-```
- npm run server 
-```
-in your terminal at project directory location to start the server]
+* How to run the program:
+
+```npm run server ```in your terminal at project directory location to start the server]
 
 
 * To mimic closing of day, turn demoENV flag in config to true to 
