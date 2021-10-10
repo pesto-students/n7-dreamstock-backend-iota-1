@@ -35,7 +35,7 @@ const UserSchema = new Schema({
   wallet_balance: {
     type: Number,
     required: false,
-    default: '10000',
+    default: UserDefaults.default_balance,
   },
   currency: {
     type: String,

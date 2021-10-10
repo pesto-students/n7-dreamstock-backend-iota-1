@@ -5,6 +5,7 @@ const passport = require('passport');
 const cron = require('node-cron');
 const cors = require('cors');
 const app = express();
+const { isDemoENV } = require('./config/index')
 // const apiMetrics = require('prometheus-api-metrics');
 
 // routes
@@ -17,7 +18,6 @@ const profile = require('./api-routes/profile');
 
 
 const trycheckUserTransactions = require('./utils/transactionsCron');
-// const timezonecheck = require('./utils/timezonecheck');
 const request = require('request');
 const updateStocksLivePrice = require('./utils/cron');
 
@@ -64,12 +64,23 @@ app.use('/api/passbook', passbook);
 app.use('/api/wallet', wallet);
 app.use('/api/profile', profile);
 
+// Creating a cron job which runs on every 10 second
+cron.schedule('*/5 * * * * *', () => {
+  if (!isDemoENV) {
+    trycheckUserTransactions();
+  }
+  console.log('trycheckUserTransactions cron job runs 5sec')
+});
 
 // Creating a cron job which runs on every 10 second
-cron.schedule('*/10 * * * * *', function() {
-  // trycheckUserTransactions();
-  updateStocksLivePrice();
-  // console.log('cron job runs 10sec')
-});
+cron.schedule('*/10 * * * * *', () => {
+  if (!isDemoENV) {
+    updateStocksLivePrice();
+  }
+  console.log('updateStocksLivePrice cron job runs 10sec')
+}
+);
+
+
 
 module.exports = app;

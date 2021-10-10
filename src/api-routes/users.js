@@ -10,12 +10,10 @@ const generateJwtToken = (data) => {
   // Sign Token
   return new Promise((resolve, reject) => {
     const payload = { id: data.id, user: data, iat: Date.now() }; // Create JWT Payload
-    console.log('Login Payload', payload);
     jwt.sign(
       payload,
       secredtJWT,
       (err, token) => {
-        console.log('token', err, token);
         resolve({
           success: true,
           token: 'Bearer ' + token,
@@ -30,7 +28,6 @@ const generateJwtToken = (data) => {
 // @desc    Register user
 // @access  Public
 router.post('/manualregister', (req, res) => {
-  // console.log('manualregister', req.body)
 
   // Check Validation
 
@@ -82,7 +79,6 @@ router.post('/login', (req, res) => {
     }
   })
     .catch((err) => {
-      console.log('login error', err);
       res.status(400).json(err);
     });
 });
@@ -106,13 +102,10 @@ router.get(
   '/current',
   passport.authenticate('jwt', { session: false }),
   (req, res) => {
-    console.log('authenticated', req.headers.authorization);
     jwt.verify(req.headers.authorization.split(' ')[1], secredtJWT, function(err, decoded) {
       if (err) {
-        console.log('err', err);
         return res.status(400).json(err);
       } else {
-        console.log('not expired', decoded);
         return res.json({ user: req.user });
 
       }

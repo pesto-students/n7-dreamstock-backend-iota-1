@@ -57,7 +57,7 @@ router.get('/summary', passport.authenticate('jwt', { session: false }), (req, r
       res.status(200).json({ success: true, finalData });
     })
     .catch(error => {
-      res.status(0).json({ success: false, error });
+      res.status(400).json({ success: false, error });
     });
 });
 
@@ -128,10 +128,10 @@ const updateWallentBalance = (user, investment, res) => {
       if (isDemoENV){
         setTimeout(() => {
           updateStocksLivePrice();
-        }, 1000 * 30);
+        }, 1000 * 10);
         setTimeout(() => {
           checkParticularUserTransaction(_id);
-        }, 1000 * 50);
+        }, 1000 * 30);
       }
       return res.status(200).json({ success: true, newBalance });
     })
