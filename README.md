@@ -2,12 +2,13 @@
 
 Application URL - https://dreamstock-n7.web.app/
 
+Storybook URL - https://pesto-students.github.io/n7-dreamstock-frontend-iota-1
+
 DreamStock is platform where users can earn profits from their portfolios by buying virtual stocks in intraday trading.
 
 ## Description
 
 By providing a platform for users seeking to venture into the stock market without actually purchasing or selling stocks, we allow them to play on their predictions of the stock market. To experience the depth of the stock market, we want users to learn, play, and explore on DreamStock.
-
 
 ## Getting Started
 
@@ -17,21 +18,18 @@ By providing a platform for users seeking to venture into the stock market witho
 * jwt-token
 
 ### Installing
-```
-clone https://github.com/amanjeet17/ejam.git
-```
+
+run ```git clone https://github.com/pesto-students/n7-backend-iota-1.git``` in your terminal
 
 ```cd n7-dreamstock-backend-iota-1```
 
-```npm i``` in your terminal
-
+```npm i```
 
 ### Executing program
 
 * How to run the program:
 
 ```npm run server``` in your terminal at project directory location to start the server
-
 
 * To mimic closing of day, turn isDemoENV flag in config to true to 
 
@@ -53,7 +51,3 @@ Abhinav Degala - abhinav.degala@gmail.com
 
 * 0.1
     * Initial Release for Demo
-
-## License
-
-This project is licensed under the [DreamStock] License.
